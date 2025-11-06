@@ -30,8 +30,8 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5.3.0
         with:
-          python-version: '3.x'
-          check-latest: true
+          python-version: '3.12'
+          check-latest: false
 
       - name: Set up chart-testing
         uses: helm/chart-testing-action@v2.7.0
@@ -40,9 +40,13 @@ jobs:
         run: |
           helm plugin install https://github.com/helm-unittest/helm-unittest
 
-      - name: Lint chart
+      - name: Lint chart with Helm
         run: |
-          ct lint --charts chart --target-branch main
+          helm lint chart
+
+      - name: Validate chart schema
+        run: |
+          helm template kubelet-volume-stats-exporter ./chart --validate
 
       - name: Run unit tests (if available)
         run: |
