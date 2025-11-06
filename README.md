@@ -39,15 +39,12 @@ Additional operational metrics:
 
 ## Quick Start
 
-### Deploy with Helm
+### Deploy with Helm (OCI Registry)
 
 ```bash
-# Add the Helm repository
-helm repo add oxy-hq https://oxy-hq.github.io/oxy-hq
-helm repo update
-
-# Install the chart
-helm upgrade --install kubelet-volume-stats oxy-hq/kubelet-volume-stats-exporter \
+# Install directly from GitHub Container Registry
+helm install kubelet-volume-stats \
+  oci://ghcr.io/oxy-hq/helm-charts/kubelet-volume-stats-exporter \
   -n kubelet-volume-stats \
   --create-namespace
 
@@ -58,16 +55,6 @@ kubectl get pods -n kubelet-volume-stats
 # Test metrics endpoint
 kubectl port-forward -n kubelet-volume-stats daemonset/kubelet-volume-stats-exporter 8080:8080
 curl http://localhost:8080/metrics | grep kubelet_volume_stats
-```
-
-### Deploy with OCI Registry (Alternative)
-
-```bash
-# Install directly from GitHub Container Registry
-helm install kubelet-volume-stats \
-  oci://ghcr.io/oxy-hq/charts/kubelet-volume-stats-exporter \
-  -n kubelet-volume-stats \
-  --create-namespace
 ```
 
 ## Configuration
@@ -154,7 +141,8 @@ scrape_configs:
 Enable ServiceMonitor for automatic scraping:
 
 ```bash
-helm upgrade --install kubelet-volume-stats oxy-hq/kubelet-volume-stats-exporter \
+helm upgrade --install kubelet-volume-stats \
+  oci://ghcr.io/oxy-hq/helm-charts/kubelet-volume-stats-exporter \
   -n kubelet-volume-stats \
   --set serviceMonitor.enabled=true
 ```
@@ -178,7 +166,8 @@ The ServiceMonitor includes the necessary `metricRelabelings` to automatically h
 Enable ServiceMonitor which includes automatic label fixing:
 
 ```bash
-helm upgrade --install kubelet-volume-stats oxy-hq/kubelet-volume-stats-exporter \
+helm upgrade --install kubelet-volume-stats \
+  oci://ghcr.io/oxy-hq/helm-charts/kubelet-volume-stats-exporter \
   -n kubelet-volume-stats \
   --set serviceMonitor.enabled=true
 ```

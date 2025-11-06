@@ -89,4 +89,4 @@ jobs:
 
       - name: Push chart to GHCR
         run: |
-          helm push ${{ steps.chart_version.outputs.name }}-${{ steps.chart_version.outputs.version }}.tgz oci://ghcr.io/${{ github.repository_owner }}/charts
+          helm push ${{ steps.chart_version.outputs.name }}-${{ steps.chart_version.outputs.version }}.tgz oci://ghcr.io/${{ github.repository_owner }}/helm-charts
