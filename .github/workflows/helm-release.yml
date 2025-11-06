@@ -59,16 +59,26 @@ jobs:
 
       - name: Package chart
         run: |
-          mkdir -p .cr-release-packages
-          helm package chart -d .cr-release-packages
+          helm package chart
+
+      - name: Get chart version
+        id: chart_version
+        run: |
+          version=$(grep '^version:' chart/Chart.yaml | awk '{print $2}')
+          name=$(grep '^name:' chart/Chart.yaml | awk '{print $2}')
+          echo "version=${version}" >> $GITHUB_OUTPUT
+          echo "name=${name}" >> $GITHUB_OUTPUT
+          echo "Chart: ${name}-${version}"
 
       - name: Create GitHub Release
-        uses: helm/chart-releaser-action@v1.7.0
-        env:
-          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-          CR_SKIP_EXISTING: "true"
+        uses: softprops/action-gh-release@v2
         with:
-          skip_packaging: true
+          tag_name: ${{ steps.chart_version.outputs.name }}-${{ steps.chart_version.outputs.version }}
+          name: ${{ steps.chart_version.outputs.name }}-${{ steps.chart_version.outputs.version }}
+          files: |
+            ${{ steps.chart_version.outputs.name }}-${{ steps.chart_version.outputs.version }}.tgz
+          generate_release_notes: true
+          fail_on_unmatched_files: true
 
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
@@ -79,9 +89,4 @@ jobs:
 
       - name: Push chart to GHCR
         run: |
-          for pkg in .cr-release-packages/*.tgz; do
-            if [ -f "${pkg}" ]; then
-              echo "Pushing ${pkg} to GHCR..."
-              helm push "${pkg}" "oci://ghcr.io/${{ github.repository_owner }}/charts"
-            fi
-          done
+          helm push ${{ steps.chart_version.outputs.name }}-${{ steps.chart_version.outputs.version }}.tgz oci://ghcr.io/${{ github.repository_owner }}/charts
