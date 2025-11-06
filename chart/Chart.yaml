@@ -20,13 +20,13 @@ keywords:
   - kubelet
   - daemonset
 
-home: https://github.com/vbeaucha/helm-charts
+home: https://github.com/oxy-hq/oxy-hq
 sources:
-  - https://github.com/vbeaucha/helm-charts
+  - https://github.com/oxy-hq/oxy-hq
 
 maintainers:
-  - name: Valentin BEAUCHAMP
-    email: vbeaucha77@gmail.com
+  - name: oxy-hq
+    email: luong@oxy.tech
 
 # Annotations for Artifact Hub
 annotations:
@@ -38,7 +38,7 @@ annotations:
     - url: https://prometheus.io/
   artifacthub.io/links: |
     - name: Documentation
-      url: https://github.com/vbeaucha/kubelet-volume-stats-exporter/blob/main/README.md
+      url: https://github.com/oxy-hq/oxy-hq/blob/main/kubelet-volume-stats-exporter/README.md
     - name: Kubernetes Issue #133961
       url: https://github.com/kubernetes/kubernetes/issues/133961
 
