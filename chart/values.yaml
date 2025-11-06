@@ -5,7 +5,7 @@
 # Image configuration
 image:
   # -- Container image repository
-  repository: ghcr.io/oxy-hq/oxy-hq/kubelet-volume-stats-exporter
+  repository: ghcr.io/oxy-hq/kubelet-volume-stats-exporter
   # -- Image pull policy
   pullPolicy: IfNotPresent
   # -- Overrides the image tag whose default is the chart appVersion

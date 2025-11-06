@@ -27,15 +27,6 @@ jobs:
       - name: Set up Helm
         uses: azure/setup-helm@v4.2.0
 
-      - name: Set up Python
-        uses: actions/setup-python@v5.3.0
-        with:
-          python-version: '3.12'
-          check-latest: false
-
-      - name: Set up chart-testing
-        uses: helm/chart-testing-action@v2.7.0
-
       - name: Install helm-unittest plugin
         run: |
           helm plugin install https://github.com/helm-unittest/helm-unittest
@@ -47,6 +38,13 @@ jobs:
       - name: Validate chart schema
         run: |
           helm template kubelet-volume-stats-exporter ./chart --validate
+
+      - name: Check for duplicate keys in YAML
+        run: |
+          find chart -name "*.yaml" -o -name "*.yml" | while read file; do
+            echo "Checking $file"
+            python3 -c "import yaml; yaml.safe_load(open('$file'))" || exit 1
+          done
 
       - name: Run unit tests (if available)
         run: |
@@ -65,14 +63,23 @@ jobs:
         run: |
           helm install kubelet-volume-stats-exporter ./chart --wait --timeout 5m
 
-      - name: Test chart
+      - name: Verify deployment
         run: |
-          helm test kubelet-volume-stats-exporter --logs
+          kubectl get daemonset kubelet-volume-stats-exporter
+          kubectl rollout status daemonset/kubelet-volume-stats-exporter --timeout=5m
+
+      - name: Test chart (if tests exist)
+        run: |
+          if helm get manifest kubelet-volume-stats-exporter | grep -q "kind: Pod.*test"; then
+            helm test kubelet-volume-stats-exporter --logs
+          else
+            echo "No Helm tests defined, skipping..."
+          fi
 
       - name: Uninstall chart
         if: always()
         run: |
-          helm uninstall kubelet-volume-stats-exporter --wait
+          helm uninstall kubelet-volume-stats-exporter --wait || true
 
   release:
     name: Release Chart

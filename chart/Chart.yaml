@@ -20,9 +20,9 @@ keywords:
   - kubelet
   - daemonset
 
-home: https://github.com/oxy-hq/oxy-hq
+home: https://github.com/oxy-hq
 sources:
-  - https://github.com/oxy-hq/oxy-hq
+  - https://github.com/oxy-hq
 
 maintainers:
   - name: oxy-hq
@@ -38,7 +38,7 @@ annotations:
     - url: https://prometheus.io/
   artifacthub.io/links: |
     - name: Documentation
-      url: https://github.com/oxy-hq/oxy-hq/blob/main/kubelet-volume-stats-exporter/README.md
+      url: https://github.com/oxy-hq/kubelet-volume-stats-exporter/blob/main/README.md
     - name: Kubernetes Issue #133961
       url: https://github.com/kubernetes/kubernetes/issues/133961
 
